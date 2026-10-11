@@ -4,7 +4,7 @@ trap 'echo "Install interrupted; inspect the new CT before retrying" >&2' ERR
 [[ $EUID -eq 0 ]] || { echo "Run as root on Proxmox"; exit 1; }
 for tool in pct pveam pvesm pvesh openssl; do command -v "$tool" >/dev/null || { echo "Missing $tool"; exit 1; }; done
 [[ $(uname -m) == x86_64 ]] || { echo "x86-64 host required"; exit 1; }
-ask() { local answer; read -r -p "$1 [$2]: " answer; printf '%s' "\${answer:-$2}"; }
+ask() { local answer; read -r -p "$1 [$2]: " answer; printf '%s' "${answer:-$2}"; }
 ID=$(ask "New CT ID" "$(pvesh get /cluster/nextid)")
 [[ $ID =~ ^[1-9][0-9]{1,5}$ ]] || exit 1
 if pct status "$ID" >/dev/null 2>&1 || [[ -e "/etc/pve/lxc/$ID.conf" ]]; then
