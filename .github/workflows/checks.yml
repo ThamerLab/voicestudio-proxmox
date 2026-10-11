@@ -1,0 +1,19 @@
+name: Checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Installer syntax
+        run: bash -n install.sh
+      - name: Installer safety invariants
+        run: |
+          grep -Fq 'already exists; refusing to overwrite' install.sh
+          grep -Fq 'ghcr.io/debpalash/voicestudio:stable' install.sh
+          grep -Fq 'voicestudio-data:/app/omnivoice_data' install.sh
+          grep -Fq 'openssl rand -hex 32' install.sh
